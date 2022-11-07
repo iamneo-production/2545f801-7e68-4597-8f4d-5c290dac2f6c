@@ -1,5 +1,8 @@
 package com.examly.controller;
 import java.util.List;
+
+import javax.xml.stream.events.Comment;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +17,8 @@ import com.examly.dao.IUserModel;
 import com.examly.model.UserModel;
 import com.examly.dao.IMusicModel;
 import com.examly.model.MusicModel;
+import com.examly.dao.IComments;
+import com.examly.model.Comments;
 @RestController
 @RequestMapping("admin")
 public class AdminController {
@@ -23,10 +28,13 @@ public class AdminController {
 	@Autowired
 	IMusicModel music;
 
+	@Autowired
+	IComments comment;
+
 	@GetMapping("/")
-	public String arrayOfUser(){
-		user.findAll(); 
-		return "Array of Users";
+	public List<UserModel> arrayOfUser(){
+		return user.findAll(); 
+		//return "Array of Users";
 	}
 	@PostMapping("add User")
 	public String userAdd(@RequestBody UserModel u) {
@@ -55,21 +63,21 @@ public class AdminController {
 	}
 
 	@GetMapping("music")
-	public String arryOfMusic() {
-		 music.findAll(); 
-	return "Array of Music";
+	public List<MusicModel> arryOfMusic() {
+		return  music.findAll(); 
+	//return "Array of Music";
 		
 	}
 
-	@DeleteMapping("music/{musicId}")
-	public String delete(@PathVariable("musicId")String musicId) {
-		music.deleteById(musicId);
+	@DeleteMapping("music/{id}")
+	public String delete(@PathVariable("id")String id) {
+		music.deleteById(id);
 		return "Song deleted";
 	}
 
-	@PutMapping("music/{musicId}")
-	public String update(@RequestBody MusicModel m,@PathVariable("musicId")String musicId) {
-		music.findById(musicId).map(mu->{
+	@PutMapping("music/{id}")
+	public String update(@RequestBody MusicModel m,@PathVariable("id")String id) {
+		music.findById(id).map(mu->{
 			mu.setMusicName(m.getMusicName());
 			mu.setMusicUrl(m.getMusicUrl());
 			mu.setMusicPosterUrl(m.getMusicPosterUrl());
@@ -78,8 +86,14 @@ public class AdminController {
 			mu.setLikes(m.getLikes());
 			return music.save(mu);
 		});
-		
+	
 		return "Save the Changes";
 	}
-
+	@GetMapping("comment")
+		public List<Comments> arryOfComment() {
+			return  comment.findAll(); 
+			// return "Array of Comments";
+			
+		}
+	
 }
